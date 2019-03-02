@@ -11,6 +11,7 @@ import (
 type Arg interface {
 	String() (string, bool)
 	Float() (float64, bool)
+	Int() (int, bool)
 	Mention() (SessionInterface, bool)
 	NewSession() (SessionInterface, bool)
 	LeftSession() (SessionInterface, bool)
@@ -54,7 +55,6 @@ func (a arg) String() (string, bool) {
 
 //Float treats the arg as float
 func (a arg) Float() (float64, bool) {
-
 	if val, ok := a.arg.(string); ok {
 		if f, err := strconv.ParseFloat(val, 64); err == nil {
 			return f, true
@@ -62,6 +62,16 @@ func (a arg) Float() (float64, bool) {
 		return 0, false
 	}
 	// log.Println(reflect.TypeOf(a.arg))
+	return 0, false
+}
+
+func (a arg) Int() (int, bool) {
+	if val, ok := a.arg.(string); ok {
+		if i, err := strconv.Atoi(val); err == nil {
+			return i, true
+		}
+		return 0, false
+	}
 	return 0, false
 }
 

@@ -1,7 +1,7 @@
 package botmeans
 
 import (
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 )
 
 //OutMsgFactoryInterface allows users to create or edit messages inside ActionHandlers

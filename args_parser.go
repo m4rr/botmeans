@@ -162,7 +162,7 @@ func ArgsParser(tgUpdate tgbotapi.Update, sessionFactory SessionFactory, aliaser
 		}
 		if tgUpdate.Message.LeftChatMember != nil {
 			if s, err := sessionFactory(SessionBase{int64(tgUpdate.Message.LeftChatMember.ID), tgUpdate.Message.LeftChatMember.UserName, tgUpdate.Message.Chat.ID, false, true}); err == nil {
-				return args{[]arg{arg{s}}, ""}
+				return args{[]arg{{s}}, ""}
 			}
 		}
 		mentions = extractMentions(tgUpdate, sessionFactory)

@@ -9,6 +9,7 @@ type OutMsgFactoryInterface interface {
 	Create(templateName string, Data interface{}) error
 	CreateWithCustomReplyKeyboard(templateName string, Data interface{}, kdb [][]MessageButton) error
 	Edit(msg BotMessageInterface, templateName string, Data interface{}) error
+	EditInsertInline(msg BotMessageInterface, templateName string, Data interface{}, kbd [][]MessageButton) error
 	Notify(BotMessageInterface, string, bool)
 	SimpleText(text string) error
 }
@@ -137,6 +138,11 @@ func (f *Sender) Notify(msg BotMessageInterface, callbackNotification string, sh
 
 //Edit allows to edit existing messages
 func (f *Sender) Edit(msg BotMessageInterface, templateName string, Data interface{}) error {
+	return f.EditInsertInline(msg, templateName, Data, nil)
+}
+
+//Edit allows to edit existing messages with custom inlines
+func (f *Sender) EditInsertInline(msg BotMessageInterface, templateName string, Data interface{}, kbd [][]MessageButton) error {
 	msg.SetData(Data)
 	params, err := renderFromTemplate(f.templateDir, templateName, f.session.Locale(), Data)
 	if err != nil {
@@ -145,7 +151,13 @@ func (f *Sender) Edit(msg BotMessageInterface, templateName string, Data interfa
 	editConfig := tgbotapi.NewEditMessageText(f.session.ChatId(), int(msg.Id()), params.text)
 
 	if params.inlineKbdMarkup != nil {
-		editConfig.ReplyMarkup = params.inlineKbdMarkup
+		templateInline := params.inlineKbdMarkup
+		if kbd != nil {
+			customInline := createInlineKeyboard(kbd)
+
+			templateInline.InlineKeyboard = append(customInline.InlineKeyboard, templateInline.InlineKeyboard...)
+		}
+		editConfig.ReplyMarkup = templateInline
 	}
 	editConfig.ParseMode = params.ParseMode
 

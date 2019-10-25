@@ -31,7 +31,9 @@ func main() {
 		log.Fatal("Cannot read DB settings")
 	}
 
-	DSN := fmt.Sprintf("user=%v dbname=%v sslmode=disable password=%v",
+	DSN := fmt.Sprintf("host=%v port=%v user=%v dbname=%v sslmode=disable password=%v",
+		DBSettings.DB_ip,
+		DBSettings.DB_port,
 		DBSettings.DB_login,
 		DBSettings.DB_name,
 		DBSettings.DB_pass)

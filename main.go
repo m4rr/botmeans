@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-telegram-bot-api/telegram-bot-api"
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/jinzhu/gorm"
 )
 
@@ -76,7 +76,11 @@ func New(DB *gorm.DB, netConfig NetConfig, tlgConfig TelegramConfig) (*MeansBot,
 //Run starts updates handling. Returns stop chan
 func (ui *MeansBot) Run(handlersProvider ActionHandlersProvider) chan interface{} {
 	templateDir := ui.tlgConfig.TemplateDir
-	botID, _ := strconv.ParseInt(strings.Split(ui.bot.Token, ":")[0], 10, 64)
+	botID, err := strconv.ParseInt(strings.Split(ui.bot.Token, ":")[0], 10, 64)
+
+	if err != nil {
+		log.Fatal(err.Error())
+	}
 
 	sessionFactory := func(base SessionBase) (SessionInterface, error) {
 		return SessionLoader(base, ui.db, botID, ui.bot)
